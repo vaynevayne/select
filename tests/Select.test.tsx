@@ -2041,3 +2041,42 @@ describe('Select.Basic', () => {
     expect(container.querySelector('.rc-virtual-list-rtl')).toBeTruthy();
   });
 });
+
+describe('custom render menu', () => {
+  it('autoClearSearchValue false works well', () => {
+    const wrapper = mount(
+      <Select
+        mode="tags"
+        value={['b']}
+        autoClearSearchValue={false}
+        options={[
+          { label: 'bamboo', title: 'TitleBamboo', value: 'b' },
+          { label: 'little', value: 'l' },
+          { label: 'Rest', value: 'r' },
+        ]}
+        dropdownRender={(menu) => (
+          <React.Fragment>
+            <div>
+              BEFORE
+              <a href="http://taobao.com" target="_blank" rel="noopener noreferrer">
+                TaoBao
+              </a>
+            </div>
+
+            {menu}
+
+            <div id="dropdown-custom-node">
+              AFTER
+              <input type="text" placeholder="test" />
+              <button type="button">Button</button>
+            </div>
+          </React.Fragment>
+        )}
+      />,
+    );
+
+    wrapper.find('.rc-select-selection-search-input').simulate('change', { target: { value: 'Two2' } });
+    wrapper.find('#dropdown-custom-node').simulate('click');
+    expect(wrapper.find('.rc-select-selection-search-input').prop('value')).toBe('Two2');
+  });
+});
